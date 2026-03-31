@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PointsModel extends Model
+class polylinesModel extends Model
 {
-    protected $table = 'points';
+    protected $table = 'polylines';
     protected $guarded = ['id'];
     protected $fillable = [
-        'geom',
-        'name',
-        'description'
-    ];
+    'geom',
+    'name',
+    'description'
+];
+
 }
