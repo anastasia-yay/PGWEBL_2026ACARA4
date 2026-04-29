@@ -12,7 +12,8 @@ class PointsModel extends Model
     protected $fillable = [
         'geom',
         'name',
-        'description'
+        'description',
+        'image'
     ];
 
     public function geojson_points()

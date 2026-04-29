@@ -39,7 +39,8 @@ class PolygonsController extends Controller
             [
                 'geometry_polygon' => 'required',
                 'name' => 'required|string|max:255',
-                'description' => 'required|string'
+                'description' => 'required|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
             ],
             [
                 'geometry_polygon.required' => 'Field geometry point harus diisi.',
@@ -47,12 +48,30 @@ class PolygonsController extends Controller
                 'name.string' => 'Field nama harus berupa string.',
                 'name.max' => 'Field nama tidak boleh lebih dari 255 karakter.',
                 'description.required' => 'Field description harus diisi.',
+                'image.image' => 'File harus berupa file gambar.',
+                'image.mimes' => 'File gambar harus berformat jpeg, png, atau jpg.',
+                'image.max' => 'Maksimal ukuran file gambar 2MB.',
         ]);
+
+        //membuat direktori untuk images apabila itu tidak tersedia
+        if (!is_dir('storage/images')) {
+        mkdir('./storage/images', 0777);
+        }
+
+        //get the upload image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name_image = time() . "_polygon." . strtolower($image->getClientOriginalExtension());
+            $image->move('storage/images', $name_image);
+        } else {
+            $name_image = null;
+        }
 
         $data = [
             'geom' => $request->geometry_polygon,
             'name' => $request->name,
-            'description' => $request->description
+            'description' => $request->description,
+            'image' => $name_image,
         ];
         //simpan ke database
         if (!$this->polygons->create($data)) {
