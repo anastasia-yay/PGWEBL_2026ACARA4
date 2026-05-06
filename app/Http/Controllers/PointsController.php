@@ -61,12 +61,61 @@ class PointsController extends Controller
 
         //simpan ke database
         if (!$this->points->create($data)) {
-            return redirect()->route('peta')->with('error', 'Gagal
-            menyimpan data poin.');
+            return redirect()->route('peta')->with('error', 'Gagal menyimpan data poin.');
         }
         //balik ke halaman peta
         return redirect()->route('peta')->with('success', 'Data poin
         berhasil disimpan.');
+    }
+
+    public function destroy(string $id)
+    {
+        //Mencari gambar berdasarkan ID Point
+        $image = $this->points->find($id)->image;
+
+        //Hapus data dari database
+        if (!$this->points->destroy($id)) {
+            return redirect()->route('peta')->with('error', 'Gagal menghapus data point');
+            }
+
+        //Hapus file gambar jika ada
+        if ($image !=null) {
+            //cek apakah file gambar ada sebelum menghapus
+            if (file_exists('storage/images/' . $image)) {
+                //hapus file gambar
+                unlink('storage/images/' . $image);
+                }
+        }
+
+        //Kembali ke halaman peta
+        return redirect()->route('peta')->with('success', 'Data poin berhasil dihapus');
+
+    }
+
+    public function geojson()
+    {
+        $points = $this->points->all();
+
+        $features = [];
+
+        foreach ($points as $p) {
+            $features[] = [
+                "type" => "Feature",
+                "geometry" => json_decode(\DB::selectOne("SELECT ST_AsGeoJSON('$p->geom') as geo")->geo),
+                "properties" => [
+                    "id" => $p->id,
+                    "name" => $p->name,
+                    "description" => $p->description,
+                    "image" => $p->image,
+                    "created_at" => $p->created_at
+                ]
+            ];
+        }
+
+        return response()->json([
+            "type" => "FeatureCollection",
+            "features" => $features
+        ]);
     }
 }
 

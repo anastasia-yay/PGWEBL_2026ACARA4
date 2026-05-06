@@ -112,6 +112,47 @@ class PolygonsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        //Mencari gambar di storage
+        $image = $this->polygons->find($id)->image;
+
+        //Hapus data dari database
+        if (!$this->polygons->destroy($id)) {
+            return redirect()->route('peta')->with('error', 'Gagal menghapus data polygon');
+            }
+
+        //Hapus file gambar jika ada
+        if ($image != null) {
+    if (file_exists('storage/images/' . $image)) {
+        unlink('storage/images/' . $image);
+    }
+}
+
+return redirect()->route('peta')->with('success', 'Data polygon berhasil dihapus');
+    }
+
+    public function geojson()
+    {
+        $polygons = $this->polygons->all();
+
+        $features = [];
+
+        foreach ($polygons as $p) {
+            $features[] = [
+                "type" => "Feature",
+                "geometry" => json_decode(\DB::selectOne("SELECT ST_AsGeoJSON('$p->geom') as geo")->geo),
+                "properties" => [
+                    "id" => $p->id,
+                    "name" => $p->name,
+                    "description" => $p->description,
+                    "image" => $p->image,
+                    "created_at" => $p->created_at
+                ]
+            ];
+        }
+
+        return response()->json([
+            "type" => "FeatureCollection",
+            "features" => $features
+        ]);
     }
 }
