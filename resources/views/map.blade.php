@@ -300,7 +300,8 @@
                     "' alt='' class='img-thumbnail' width='400'>" + "<br><br>" +
                     "<form action='" + routedelete + "' method='POST'>" +
                     '@csrf' +
-                    '@method('DELETE')'' + "<button type='submit' class='btn btn-danger btn-sm' title='Delete Feature' onclick='return confirm(\"Are you sure you want to delete this feature?\")'>Delete</button>" +
+                    '@method('DELETE')' +
+                    "<button type='submit' class='btn btn-danger btn-sm' title='Delete Feature' onclick='return confirm(\"Are you sure you want to delete this feature?\")'>Delete</button>" +
                     "</form>";
 
                 layer.on({
@@ -337,8 +338,8 @@
                         "' class='img-thumbnail' width='400'><br><br>" :
                         "") +
                     "<form action='" + routedelete + "' method='POST'>" +
-                    "@csrf" +
-                    "@method('DELETE')" +
+                    '@csrf' +
+                    '@method('DELETE')' +
                     "<button type='submit' class='btn btn-danger btn-sm' onclick=\"return confirm('Are you sure?')\">Delete</button>" +
                     "</form>";
 
@@ -376,7 +377,7 @@
                     "' alt='' class='img-thumbnail' width='400'>" + "<br><br>" +
                     "<form action='" + routedelete + "' method='POST'>" +
                     '@csrf' +
-                    "@method('DELETE')" +
+                    '@method('DELETE')' +
                     "<button type='submit' class='btn btn-danger btn-sm' title='Delete Feature' onclick='return confirm(\"Are you sure you want to delete this feature?\")'>Delete</button>" +
                     "</form>";
 
